@@ -1,0 +1,72 @@
+README
+
+Nombre: Felipe Vásquez Moreno.
+
+a) Instrucciones de ejecución.
+
+    El código se divide principalmente en analisis_datos, expansion_primer_orden, expansion_segundo_orden y comparacion_metodos.
+
+    i) Ejecución de analisis_datos.py:
+        python analisis_datos.py -d data_set -e experimento
+
+    ii) Ejecución de expansion_primer_orden.py:
+        python expansion_primer_orden.py -e experimento -N tamanno_lista
+
+    iii) Ejecución de expansion_segundo_orden.py:
+        python expansion_segundo_orden.py -e experimento -N tamanno_lista
+
+    iv) Ejecución de comparacion_metodos.py:
+        python comparacion_metodos.py -d data_set -e experimento -N tamanno_lista
+    
+b) Parámetros necesarios para ejecutar el algoritmo
+    i) -d data_set: Especifica el conjunto de dato utilizado, puede ser MovieLens 100k o 1M.
+    ii) -e experimento: Especifica el experimento que se desea reproducir.
+    iii) -N tammano_lista: Valor entero. Permite controlar el tamaño de la lista de recomendación.
+
+c) Experimentos -e:
+    i) analisis_datos.py
+        1) dispersion: Retorna la dispersión (gráfico de intensidad) del conjunto de datos.
+        2) frecuencia_rating: Retorna la frecuencia relativa de los ratings del conjunto de datos.
+        3) distribucion: Retorna la distribución del conjunto de datos (distribucón Long Tail).
+        4) clasificacion_usuarios: Retorna la clasificación de los usuarios, pesimista, neutral y optimista (boxplot)
+        5) distribucion_generos: Retorna la distribución de géneros del conjunto de datos.
+
+    ii) expansion_primer_orden.py
+        1) umbral_relevancia: Precisión y recall para diferentes umbrales de relevancia (3,4 y 5)
+        2) tamanno_vecindario: Tamaño del vecindario en la recomendación para Coseno y Pearson.
+        3) normalizacion: Retorna el efecto de normalizar las calificaciones para Coseno y Pearson. (Se recomienda utilizar N=10, ya que el gráfico de barra sufre overlap para N muy grande).
+        4) productos_recomendados: Métricas de relevancia binaria para lista de productos recomendados para Coseno y Pearson.
+        5) trade_off: Intercambio entre precision y recall.
+        6) cold_start: Expansión de primer orden en situación de cold-start.
+        7) ndcg: Comparación entre Coseno y Pearson mediante ndcg.
+
+    iii) expansion_segundo_orden.py:
+        1) expansion_segundo_orden: Comparación entre Pearson y Coseno en expansión de segundo orden, sólo considerando good_users (usuarios neutrales) en el vecindario.
+        2) interseccion_minima: Retorna el efecto de exigir una intersección mínima de los productos calificados por el usuario objetivo y sus vecinos.
+        3) usuarios_experimentados: Retorna el efecto de considerar usuarios experimentados en el vecindario.
+        4) normalizacion_pearson: Efecto de normalizar las calificaciones de los usuarios y productos utilizando como métrica de similitud Pearson.
+        5) normalizacion_coseno: Efecto de normalizar las calificaciones de los usuarios y productos utilizando como métrica de similitud Coseno.
+        6) cold_start: Expansión de segundo orden en situación de cold-start.
+    iv) comparacion_metodos.py:
+        1) alphas: Sintonización del parámetro alpha para el método híbrido
+        2) comparacion_directa: Comparación entre los distintos métodos (se realiza una comparación entre expansiones y luego entre los 3 métodos).
+        3) abundacia_datos: Comparación en situación de abundancia de datos (give=20)
+        4) comparacion_1M: Comparación para el conjunto de datos 1M (relevancia binaria y ndcg).
+        5) ndcg: Comparación entre los métodos mediante ndcg (primero se comparan las expansiones y luego los 3 métodos).
+        6) entropia: Comparación de la entropía entre expansión de primer y segundo orden.
+
+
+d) Consideraciones:
+    i) analisis_datos.py:
+        Sólo se consideran los dataset de MovieLens 100k y 1M.
+        La matriz de ratings debe estar en formato sparse de matrix market en caso de querer utilizar otros data sets.
+    ii) expansion_primer_orden.py:
+        Los experimentos se realizaron sobre MovieLens 100k
+    iii) expansion_segundo_orden.py:
+        El algoritmo se evalúa en situación de cold-start-5, es decir, cada usuario del conjunto de validación mantiene 5 calificaciones (given=5). Para el caso del experimento de cold_start el parámetro given=[2,3,5,10,20].
+    iv) Otros códigos:
+        1) funciones.py: Contiene todas las funciones utilizadas por los algoritmos
+        2) plots.py: Contiene los algoritmos de los gráficos.
+        3) user_based.py: Contiene los algoritmos para calcular las predicciones en expansion de primer orden.
+        4) user_based_sup.py: Contiene los algoritmos para calcular las predicciones en expansion de segundo orden.
+        5)user_based_comparacion.py: Contiene los algoritmos para calcular las predicciones de los 3 métodos para compararlos.

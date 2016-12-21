@@ -4,7 +4,6 @@ from time import time
 from funciones import *
 from funciones import _similitud,_similitud_orden_superior,_precision_recall,_nDCG,entropia_
 
-
 def user_based_CV(m_ratings,n_users,n_items,users_mean,users_std,good_users,x,N,good_rating,
                   k_max,alpha,min_int,u_exp,norm_expansion,normalizacion='none',similitud='coseno'):
     tiempo_total_ini = time()
@@ -68,8 +67,6 @@ def user_based_CV(m_ratings,n_users,n_items,users_mean,users_std,good_users,x,N,
                     # Se calcula el promedio y la std para el usuario respecto a las 30 productos que se utilizaran
                     u_mean, u_std = one_user_mean_std(m_ratings[u, productos_train].toarray()[0])
 
-                    #productos_train.sort()
-
                     # Se crea un vector de zeros para almacenar solo los x=5 ratings que se pueden usar para el calculo de 
                     # similitud del usuario objetivo
                     u_productos = np.zeros(n_items)
@@ -98,7 +95,6 @@ def user_based_CV(m_ratings,n_users,n_items,users_mean,users_std,good_users,x,N,
         tiempo_fin = time()
         print 'Tiempo para un fold: ',(tiempo_fin - tiempo_ini)
 
-    #Se calculan las metricas promediando las obtenidas en cada k-fold
     P_at_k = np.mean(total_precision_at_k, axis = 0)
     R_at_k = np.mean(total_recall_at_k, axis = 0)
     F1_at_k = 2*np.multiply(P_at_k, R_at_k) / (P_at_k + R_at_k)
@@ -219,12 +215,10 @@ def user_based_entropia(m_ratings,movies,genres,n_users,n_items,users_mean,users
 
                 u_mean, u_std = one_user_mean_std(m_ratings[u, productos_train].toarray()[0])
 
-                # Se crea un vector de zeros para almacenar solo los x=5 ratings que se pueden usar para el calculo de 
-                # similitud del usuario objetivo
+
                 u_productos = np.zeros(n_items)
                 u_productos[productos_train] = m_ratings[u, productos_train].toarray()[0]
 
-                # Se realiza la prediccion de ratings para el usuario
                 pred,pred_ord_sup,pred_hibrido=_user_based(u,u_productos,n_users,n_items,productos_test,
                             productos_train,m_ratings,u_test,u_train,u_mean,u_std,users_mean,users_std,
                             productos_mean,productos_std,good_users,k_max,alpha,min_int,u_exp,
@@ -236,7 +230,7 @@ def user_based_entropia(m_ratings,movies,genres,n_users,n_items,users_mean,users
 
                 entropia=[]
                 entropia_sup=[]
-                for i in range(1, N+1): #cambiar 11 por el largo de la lista (N + 1)
+                for i in range(1, N+1):
                     entropia.append(entropia_(pred[:i],movies,genres))
                     entropia_sup.append(entropia_(pred_ord_sup[:i],movies,genres))
 
@@ -273,6 +267,8 @@ def user_based_entropia(m_ratings,movies,genres,n_users,n_items,users_mean,users
     print 'Tiempo para 5-fold: ',(tiempo_total_fin - tiempo_total_ini)
     
     return Entropia, Entropia_sup, interseccion_v_total, jaccard_v_total
+
+# calculo de vecindario y prediccion para cada metodo (primer, segundo e hibrido)
 def _user_based(u_a,u_productos_train,n_users,n_items,productos_test,productos_train,m_ratings,user_test,user_train,
                 u_a_mean,u_a_std,users_mean,users_std,items_mean,items_std,good_users,k_max,alpha,min_int,u_exp,
                 norm_exp,type='none',similarity='coseno'):
@@ -381,40 +377,23 @@ def user_based_CV_1M(m_ratings,n_users,n_items,users_mean,users_std,good_users,x
 
     for u in u_test:
         if(m_ratings[u].nnz > x + N):
-            # realizar un random de 0..m_ratings[u].nnz (cantidad de ratings no nulos) de x
             index_rand_productos = random.sample(xrange(m_ratings[u].nnz), x)
-            # Se seleccionan los productos calificados por u y de estos se obtiene los x=30 productos (indices)
-            # visibles del test data
-            # productos_train: son los productos de u con ratings visibles
             productos_train = m_ratings[u].nonzero()[1][index_rand_productos]
-            # Peliculas que se deben recomendar (complemento de las peliculas vistas seleccionadas al azar)
-            # Productos_test: son los productos que se debe recomendar
             productos_test = np.setdiff1d(m_ratings[u].nonzero()[1], productos_train)
-            # ratings del conjunto que se recomienda
             ratings_test = m_ratings[u, productos_test].toarray()[0]
-            # productos_relevantes: productos relevantes del conjunto productos_test (productos a recomendar)
             productos_relevantes = productos_test[np.where(ratings_test >= good_rating)[0]]
 
-            # Verificamos que almenos un producto a recomendar sea relevante, de lo contrario no tiene sentido
-            # calcular las medidas
             if(len(productos_relevantes) > 0):
-                # Se calcula el promedio y la std para el usuario respecto a las 30 productos que se utilizaran
                 u_mean, u_std = one_user_mean_std(m_ratings[u, productos_train].toarray()[0])
 
-                #productos_train.sort()
-
-                # Se crea un vector de zeros para almacenar solo los x=5 ratings que se pueden usar para el calculo de 
-                # similitud del usuario objetivo
                 u_productos = np.zeros(n_items)
                 u_productos[productos_train] = m_ratings[u, productos_train].toarray()[0]
 
-                # Se realiza la prediccion de ratings para el usuario
                 pred,pred_ord_sup,pred_hibrido=_user_based(u,u_productos,n_users,n_items,productos_test,
                             productos_train,m_ratings,u_test,u_train,u_mean,u_std,users_mean,users_std,
                             productos_mean,productos_std,good_users,k_max,alpha,min_int,u_exp,
                             norm_expansion,type=normalizacion,similarity=similitud)
 
-                #Se calcula la precision y recall para las recomendaciones de u
                 _precision_recall(pred, productos_relevantes, N, precision_at_k, recall_at_k)
                 _precision_recall(pred_ord_sup, productos_relevantes, N, precision_at_k_sup, recall_at_k_sup)
                 _precision_recall(pred_hibrido, productos_relevantes, N, precision_at_k_hibrido, recall_at_k_hibrido)
@@ -471,7 +450,6 @@ def user_based_ndcg_1M(m_ratings,n_users,n_items,users_mean,users_std,good_users
                         productos_mean,productos_std,good_users,k_max,alpha,min_int,u_exp,
                         norm_expansion,type=normalizacion,similarity=similitud)
 
-            #Se calcula nDCG para las recomendaciones de u
             _nDCG(u, pred, m_ratings, N, nDCG_at_k)
             _nDCG(u, pred_ord_sup, m_ratings, N, nDCG_at_k_sup)
             _nDCG(u, pred_hibrido, m_ratings, N, nDCG_at_k_hibrido)

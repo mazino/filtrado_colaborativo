@@ -25,7 +25,6 @@ movies = pd.read_csv('ml-100k/u.item', sep='|', names=m_cols, usecols=range(24),
 #movies = pd.read_csv('ml-10m/movies.dat', sep='::', names=m_cols, engine='python')
 #movies = pd.read_csv('ml-20m/movies.csv', sep=',', names=m_cols)
 
-
 hash_v = hash_productos(movies, 'movie_id')
 
 # Lectura y almacenamiento de la matriz de ratings dispersa

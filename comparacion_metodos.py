@@ -79,7 +79,6 @@ elif(sys.argv[4] == 'comparacion_1M' or sys.argv[2] == 'comparacion_1m'):
                         norm_expansion='mean_centering_v',normalizacion='none',similitud='pearson')
     plot_comparacion_expansiones(p,r,f,p_sup,r_sup,f_sup,p_hib,r_hib,f_hib,N,hibrido=False)
     plot_comparacion_expansiones(p,r,f,p_sup,r_sup,f_sup,p_hib,r_hib,f_hib,N,hibrido=True)
-
     #ndcg para 1M
     print("Calculando metricas de relevancia categorica")
     nDCG,nDCG_sup,nDCG_hib=user_based_ndcg_1M(m_ratings,n_users,n_items,users_mean,users_std,good_users,

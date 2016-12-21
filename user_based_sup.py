@@ -3,11 +3,7 @@ import numpy as np
 from time import time
 from funciones import *
 from funciones import _precision_recall, _similitud_orden_superior
-# N = Top-N list
-# x =  cantidad de ratings calificados (vistos) por los usuarios de test
-# good_rating = Ratings relevantes (umbral)
-# Seleccionar de manera random x = 30 peliculas para cada usuario considarando que se quiere realizar un N-top list,
-# cada usuario debe almenos tener x + N peliculas
+
 def user_based_CV(m_ratings, n_users, n_items, users_mean, users_std, good_users, x, N,
                  good_rating, min_int, u_exp, norm_expansion = 'none', similitud = 'coseno'):
     tiempo_total_ini = time()

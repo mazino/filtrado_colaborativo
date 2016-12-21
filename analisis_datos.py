@@ -118,11 +118,8 @@ elif(sys.argv[4]=='clasificacion_usuarios'):
             optimista.append(users_mean[u])
     data_to_plot = [pesimista, neutro, optimista]
     labels = ["Pesimista", "Neutro", "Optimista"]
-    # Create a figure instance
     fig = plt.figure(1, figsize=(9, 6))
-    # Create an axes instance
     ax = fig.add_subplot(111)
-    # Create the boxplot
     bp = ax.boxplot(data_to_plot)
     ax.set_xticklabels(labels, fontsize=20)
     ax.set_yticklabels(["1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0", "4.5", "5.0"], fontsize=20)

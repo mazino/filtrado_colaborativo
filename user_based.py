@@ -1,11 +1,9 @@
-# N = Top-N list
-# x =  cantidad de ratings calificados (vistos) por los usuarios de test
-# good_rating = Ratings relevantes (umbral)
 import random
 import numpy as np
 from time import time
 from funciones import *
 from funciones import _similitud, _precision_recall, _nDCG
+
 def user_based_CV(m_ratings, n_users, n_items, users_mean, users_std, x, N,
                  good_rating, k_max, normalizacion, similitud):
     tiempo_total_ini = time()
@@ -52,12 +50,10 @@ def user_based_CV(m_ratings, n_users, n_items, users_mean, users_std, x, N,
                                     users_mean,users_std,k_max,type=normalizacion,similarity=similitud)
                     #Se calcula la precision y recall para las recomendaciones de u
                     _precision_recall(pred, productos_relevantes, N, precision_at_k, recall_at_k)
-            #break
         total_precision_at_k.append(np.mean(precision_at_k, axis = 0))
         total_recall_at_k.append(np.mean(recall_at_k, axis = 0))
         tiempo_fin = time()
         print 'Tiempo per k-fold: ',(tiempo_fin - tiempo_ini)
-        break
 
     #Se calculan las metricas promediando las obtenidas en cada k-fold
     P_var_fold = np.var(total_precision_at_k, axis=0)
@@ -103,6 +99,7 @@ def user_based_CV_ndcg(m_ratings,n_users,n_items,users_mean,users_std,x,N,
 
     return nDCG
 
+# calculo de vecindario y prediccion
 def _user_based(u_a, u_productos_train, n_users, n_items, productos_test, m_ratings, user_test,
                 u_a_mean, u_a_std, users_mean, users_std, k_max, type = 'none', similarity = 'coseno'):
     pred = []
