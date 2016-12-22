@@ -64,7 +64,8 @@ d) Consideraciones:
         Los experimentos se realizaron sobre MovieLens 100k
     iii) expansion_segundo_orden.py:
         El algoritmo se evalúa en situación de cold-start-5, es decir, cada usuario del conjunto de validación mantiene 5 calificaciones (given=5). Para el caso del experimento de cold_start el parámetro given=[2,3,5,10,20].
-    iv) Otros códigos:
+    iv) Las carpetas ml-100k y ml-1m contienen los conjuntos de datos utilizandos, MoviLens 100k y 1M respectivamente
+    v) Otros códigos:
         1) funciones.py: Contiene todas las funciones utilizadas por los algoritmos
         2) plots.py: Contiene los algoritmos de los gráficos.
         3) user_based.py: Contiene los algoritmos para calcular las predicciones en expansion de primer orden.
